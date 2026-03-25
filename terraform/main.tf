@@ -39,6 +39,8 @@ resource "newrelic_synthetics_cert_check_monitor" "ssl_monitor" {
   status                 = "ENABLED"
   certificate_expiration = 30 # Default to 30 days
   locations_public       = lookup(each.value, "locations", ["US_EAST_1"])
+  runtime_type_version   = "100"
+  runtime_type           = "CHROME_BROWSER"
 }
 
 # --- 3. UPDATED TAGGING LOGIC ---
