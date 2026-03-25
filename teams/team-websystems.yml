@@ -1,0 +1,30 @@
+monitors:
+  - name: "Alpha-Homepage-Ping"
+    type: "SIMPLE"        # Ping Monitor
+    uri: "https://example.com"
+    period: "EVERY_MINUTE"
+    locations: ["US_EAST_1", "AWS_US_WEST_2"]
+    tags: 
+      team: "alpha"
+      env: "production"
+      responsible-team: "alpha-sre"
+    
+  - name: "Alpha-Login-Browser"
+    type: "BROWSER"       # Simple Browser
+    uri: "https://example.com/login"
+    period: "EVERY_5_MINUTES"
+    locations: ["US_WEST_1"]
+    tags: 
+      team: "alpha"
+      env: "production"
+      responsible-team: "alpha-sre"
+
+  - name: "Alpha-SSL-Check"
+    type: "CERT_CHECK"    # SSL Check
+    domain: "example.com"
+    period: "EVERY_DAY"
+    locations: ["US_EAST_1"]
+    tags: 
+      team: "alpha"
+      env: "production"
+      responsible-team: "alpha-sre"
