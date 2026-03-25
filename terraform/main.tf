@@ -39,8 +39,8 @@ resource "newrelic_synthetics_cert_check_monitor" "ssl_monitor" {
   status                 = "ENABLED"
   certificate_expiration = 30 # Default to 30 days
   locations_public       = lookup(each.value, "locations", ["US_EAST_1"])
-  runtime_type_version   = "NODE_API"
-  runtime_type           = "16.10"
+  runtime_type           = "NODE_API"
+  runtime_type_version   = "16.10"
 }
 
 # --- 3. UPDATED TAGGING LOGIC ---
