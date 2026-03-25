@@ -11,7 +11,7 @@ monitors:
     
   - name: "Alpha-Login-Browser"
     type: "BROWSER"       # Simple Browser
-    uri: "https://example.com/login"
+    uri: "https://example.com/logins"
     period: "EVERY_5_MINUTES"
     locations: ["US_WEST_1"]
     tags: 
