@@ -2,7 +2,7 @@ locals {
   # Load all YAML files from the teams folder
   team_files = fileset("../teams", "*.yml")
   raw_data   = [for f in local.team_files : yamldecode(file("../teams/${f}"))]
-  
+
   # Flatten into a single list of monitors
   all_monitors = flatten([for d in local.raw_data : d.monitors])
 }
@@ -11,11 +11,11 @@ locals {
 resource "newrelic_synthetics_monitor" "monitor" {
   for_each = { for m in local.all_monitors : m.name => m }
 
-  name      = each.value.name
-  type      = each.value.type
-  uri       = lookup(each.value, "uri", null)
-  period    = each.value.period
-  status    = "ENABLED"
+  name             = each.value.name
+  type             = each.value.type
+  uri              = lookup(each.value, "uri", null)
+  period           = each.value.period
+  status           = "ENABLED"
   locations_public = lookup(each.value, "locations", ["US_EAST_1"])
 }
 
