@@ -11,12 +11,14 @@ locals {
 resource "newrelic_synthetics_monitor" "monitor" {
   for_each = { for m in local.all_monitors : m.name => m }
 
-  name             = each.value.name
-  type             = each.value.type
-  uri              = lookup(each.value, "uri", null)
-  period           = each.value.period
-  status           = "ENABLED"
-  locations_public = lookup(each.value, "locations", ["US_EAST_1"])
+  name                 = each.value.name
+  type                 = each.value.type
+  uri                  = lookup(each.value, "uri", null)
+  period               = each.value.period
+  status               = "ENABLED"
+  runtime_type_version = "100"
+  runtime_type         = "CHROME_BROWSER"
+  locations_public     = lookup(each.value, "locations", ["US_EAST_1"])
 }
 
 # 2. Apply the Tags (New Logic)
