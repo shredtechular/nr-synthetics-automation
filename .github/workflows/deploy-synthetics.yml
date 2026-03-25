@@ -18,9 +18,9 @@ jobs:
     
     # Environment variables for New Relic Provider
     env:
-      NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
-      NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
-      NEW_RELIC_REGION: "US" # or "EU"
+      TF_VAR_NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+      TF_VAR_NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      TF_VAR_NEW_RELIC_REGION: "US" # or "EU"
 
     steps:
       - name: Checkout
