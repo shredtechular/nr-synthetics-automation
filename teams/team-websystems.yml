@@ -28,3 +28,13 @@ monitors:
       team: "alpha"
       env: "production"
       responsible-team: "alpha-sre"
+
+  - name: "andrew-homepage-brwoser"
+    type: "BROWSER"       # Simple Browser
+    uri: "https://andrewwn@gmail.com"
+    period: "EVERY_5_MINUTES"
+    locations: ["US_WEST_1"]
+    tags: 
+      team: "andrew"
+      env: "production"
+      responsible-team: "andrew"
