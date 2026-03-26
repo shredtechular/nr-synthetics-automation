@@ -1,5 +1,5 @@
 monitors:
-  - name: "andrew-homepage-brwoser"
+  - name: "andrew-homepage-browser"
     type: "BROWSER"       # Simple Browser
     uri: "https://andrewwnewhouse.com"
     period: "EVERY_5_MINUTES"
