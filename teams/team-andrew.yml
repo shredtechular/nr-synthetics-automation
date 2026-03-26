@@ -3,7 +3,7 @@ monitors:
     type: "BROWSER"       # Simple Browser
     uri: "https://andrewwnewhouse.com"
     period: "EVERY_HOUR"
-    locations: ["US_WEST_1, US_EAST_1"]
+    locations: ["US_WEST_1", "US_EAST_1"]
     tags: 
       team: "andrew"
       env: "production"
