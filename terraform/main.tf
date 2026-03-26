@@ -1,20 +1,20 @@
-# --- TEAM ALPHA (Account 123) ---
-module "team_alpha" {
+# --- TEAM Andrew ---
+module "team_andrew" {
   source    = "./modules/monitor_set"
-  yaml_file = "../teams/team-alpha.yml"
+  yaml_file = "../teams/team-andrew.yml"
   providers = {
-    newrelic = newrelic.alpha 
+    newrelic = newrelic.andrew 
   }
 }
 
-# --- TEAM BETA (Account 456) ---
-module "team_beta" {
+# --- TEAM WebSystems ---
+module "team_websystems" {
   source    = "./modules/monitor_set"
-  yaml_file = "../teams/team-beta.yml"
+  yaml_file = "../teams/team-websystems.yml"
   providers = {
-    newrelic = newrelic.beta
+    newrelic = newrelic
   }
 }
 
-# --- TEAM GAMMA (Account 789) ---
+# --- TEAM GAMMA ---
 # Just keep repeating this pattern!

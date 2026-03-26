@@ -24,7 +24,7 @@ jobs:
 
       # Team Alpha Mapping
       TF_VAR_ANDREW_ACCOUNT_ID: ${{ secrets.ANDREW_ACCOUNT_ID }}
-      TF_VAR_ANDREW_API_KEY: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+      TF_VAR_ANDREW_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
 
       # Global Settings
       TF_VAR_NEW_RELIC_REGION: "US"
