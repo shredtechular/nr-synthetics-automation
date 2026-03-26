@@ -1,9 +1,9 @@
 monitors:
-  - name: "andrew-homepage-browser"
+  - name: "andrew-homepage-browser-monitor"
     type: "BROWSER"       # Simple Browser
     uri: "https://andrewwnewhouse.com"
-    period: "EVERY_5_MINUTES"
-    locations: ["US_WEST_1"]
+    period: "EVERY_HOUR"
+    locations: ["US_WEST_1, US_EAST_1"]
     tags: 
       team: "andrew"
       env: "production"
