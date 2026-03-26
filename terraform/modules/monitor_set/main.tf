@@ -41,7 +41,7 @@ resource "newrelic_synthetics_cert_check_monitor" "ssl_monitor" {
 
 # Logic for TAGS
 resource "newrelic_entity_tags" "tags" {
-  for_each = { for m in local.all_monitors : m.name => m if can(m.tags) }
+  for_each = { for m in local.team_data.monitors : m.name => m if can(m.tags) }
 
   # This dynamic lookup finds the GUID regardless of which resource created it
   guid = (
