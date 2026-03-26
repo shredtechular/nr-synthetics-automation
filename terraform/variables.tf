@@ -14,10 +14,10 @@ variable "NEW_RELIC_API_KEY" {
 }
 
 # Team Andrew
-variable "ANDREW_ACCOUNT_ID" { 
-  type = string 
+variable "ANDREW_ACCOUNT_ID" {
+  type = string
 }
-variable "ANDREW_API_KEY"    { 
-  type = string 
-  sensitive = true 
+variable "ANDREW_API_KEY" {
+  type      = string
+  sensitive = true
 }

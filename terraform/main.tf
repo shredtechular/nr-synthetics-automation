@@ -3,7 +3,7 @@ module "team_andrew" {
   source    = "./modules/monitor_set"
   yaml_file = "../teams/team-andrew.yml"
   providers = {
-    newrelic = newrelic.andrew 
+    newrelic = newrelic.andrew
   }
 }
 
