@@ -12,7 +12,7 @@ monitors:
   - name: "Alpha-Login-Browser"
     type: "BROWSER"       # Simple Browser
     uri: "https://example.com/logins"
-    period: "EVERY_5_MINUTES"
+    period: "EVERY_15_MINUTES"
     locations: ["US_WEST_1"]
     tags: 
       team: "alpha"
