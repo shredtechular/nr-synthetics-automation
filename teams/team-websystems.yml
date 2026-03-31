@@ -2,7 +2,7 @@ monitors:
   - name: "Alpha-Homepages-Ping"
     type: "SIMPLE"        # Ping Monitor
     uri: "https://example.com"
-    period: "EVERY_MINUTE"
+    period: "EVERY_15_MINUTES"
     locations: ["US_EAST_1", "AWS_US_WEST_2"]
     tags: 
       team: "alpha"
