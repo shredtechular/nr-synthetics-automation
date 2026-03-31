@@ -1,5 +1,5 @@
 monitors:
-  - name: "Alpha-Homepage-Ping"
+  - name: "Alpha-Homepages-Ping"
     type: "SIMPLE"        # Ping Monitor
     uri: "https://example.com"
     period: "EVERY_MINUTE"
