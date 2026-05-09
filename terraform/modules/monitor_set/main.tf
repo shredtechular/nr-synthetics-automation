@@ -9,7 +9,7 @@ locals {
 resource "newrelic_synthetics_monitor" "monitor" {
   for_each = { 
     for m in local.team_data.monitors : m.name => m 
-    if m.type != "CERT_CHECK" 
+    if !contains(["CERT_CHECK", "SCRIPTED_API"], m.type)
   }
 
   name                 = each.value.name
@@ -39,6 +39,32 @@ resource "newrelic_synthetics_cert_check_monitor" "ssl_monitor" {
   runtime_type_version   = "16.10"
 }
 
+# Logic for SCRIPTED_API MONITORS
+resource "newrelic_synthetics_script_monitor" "scripted_api_monitor" {
+  for_each = {
+    for m in local.team_data.monitors : m.name => m
+    if m.type == "SCRIPTED_API"
+  }
+
+  name   = each.value.name
+  type   = "SCRIPT_API"
+  period = each.value.period
+  status = "ENABLED"
+
+  runtime_type         = "NODE_API"
+  runtime_type_version = "16.10"
+
+  locations_public = lookup(each.value, "locations", ["US_EAST_1"])
+
+  script = templatefile("${path.module}/api_monitor_template.js.tftpl", {
+    api_url        = each.value.api_url
+    http_method    = lookup(each.value, "http_method", "GET")
+    custom_headers = jsonencode(lookup(each.value, "custom_headers", {}))
+    payload        = lookup(each.value, "payload", null) != null ? jsonencode(lookup(each.value, "payload", null)) : "null"
+    expected_status = lookup(each.value, "expected_status", 200)
+  })
+}
+
 # Logic for TAGS
 resource "newrelic_entity_tags" "tags" {
   for_each = { for m in local.team_data.monitors : m.name => m if can(m.tags) }
@@ -47,6 +73,8 @@ resource "newrelic_entity_tags" "tags" {
   guid = (
     contains(["SIMPLE", "BROWSER"], each.value.type) ?
     newrelic_synthetics_monitor.monitor[each.key].id :
+    each.value.type == "SCRIPTED_API" ?
+    newrelic_synthetics_script_monitor.scripted_api_monitor[each.key].id :
     newrelic_synthetics_cert_check_monitor.ssl_monitor[each.key].id
   )
 

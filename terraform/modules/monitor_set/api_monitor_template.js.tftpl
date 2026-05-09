@@ -1,0 +1,70 @@
+/**
+ * Script Name: Flexible API Monitor Template
+ * Purpose: Generic, re-usable Synthetics monitor for dynamic API calls
+ */
+
+/* ---------------- API MONITOR SPECIFIC CONFIGURATIONS ------------------- */
+/*  Please change items 1 - 5 below for the specific API call being checked */
+/* ----------------------- CONFIGURATION ---------------------------------- */
+// 1. The full URL of the API endpoint
+const API_URL = '${api_url}';
+
+// 2. HTTP Method: 'GET', 'POST', 'PUT', 'DELETE', etc.
+const HTTP_METHOD = '${http_method}';
+
+// 3. Headers: Define as a JSON object (e.g., { 'Content-Type': 'application/json' })
+// Leave as empty object {} if no custom headers are needed.
+const CUSTOM_HEADERS = ${custom_headers};
+
+// 4. Payload: Define the body for POST/PUT requests (String or JSON)
+// Set to null for GET requests.
+const PAYLOAD = ${payload};
+
+// 5. Expected Status Code (usually 200)
+const EXPECTED_STATUS = ${expected_status};
+
+/* ----------------------------------------------------------------------- */
+/* ---- NO FURTHER CODE CHANGES NEEDED BELOW THIS!!! DO NOT CHANGE!  ----- */
+/* ----------------------------------------------------------------------- */
+const assert = require('assert');
+
+// Build the request options dynamically
+const options = {
+  url: API_URL,
+  method: HTTP_METHOD,
+  headers: CUSTOM_HEADERS,
+  // Optional: Follow redirects automatically
+  followRedirect: true,
+  // Optional: Strict SSL verification
+  strictSSL: true
+};
+
+// --- LOGIC TO PREVENT "GET with Body" ERRORS ---
+// Only attach the body if the method supports it and a payload exists
+const methodsWithBody = ['POST', 'PUT', 'PATCH', 'DELETE'];
+if (methodsWithBody.includes(options.method) && PAYLOAD !== null) {
+  options.body = typeof PAYLOAD === 'object' ? JSON.stringify(PAYLOAD) : PAYLOAD;
+}
+
+console.log(`Starting $${HTTP_METHOD} request to: $${API_URL}`);
+
+// Execute the request using the dynamic options object
+$http(options, function (error, response, body) {
+  // 1. Check for transport-level errors (DNS, Timeout, etc.)
+  if (error) {
+    console.error('Request failed due to an error:', error);
+    assert.fail('Request Error: ' + error.message);
+  }
+
+  // 2. Log response details for troubleshooting in New Relic Logs
+  console.log('Response Status Code:', response.statusCode);
+
+  // 3. Validate the Status Code
+  assert.equal(response.statusCode, EXPECTED_STATUS,
+    `Expected status $${EXPECTED_STATUS} but received $${response.statusCode}`);
+
+  // 4. Optional: Basic validation that the body is not empty
+  assert.ok(body, 'Response body should not be empty');
+
+  console.log('Monitor completed successfully.');
+});

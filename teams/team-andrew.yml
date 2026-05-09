@@ -9,6 +9,16 @@ monitors:
       env: "production"
       responsible-team: "andrew"
 
+  - name: "Andrew-VehicleAPI-Check"
+    type: "SCRIPTED_API"
+    api_url: "https://vpic.nhtsa.dot.gov/api/vehicles/decodewmi/1FD?format=json"
+    period: "EVERY_15_MINUTES"
+    locations: ["US_EAST_1"]
+    tags:
+      team: "andrew"
+      env: "production"
+      responsible-team: "andrew"
+
   - name: "Andrew-SSL-Check"
     type: "CERT_CHECK"    # SSL Check
     domain: "andrewwnewhouse.com"
