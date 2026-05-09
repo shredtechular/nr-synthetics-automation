@@ -2,7 +2,7 @@
 
 A standardized, multi-account automation framework for managing New Relic Synthetics monitors using Terraform, GitHub Actions, and YAML.
 
-## Overview
+## 🚀 Overview
 
 Teams manage their own monitors by editing a single YAML file. The underlying Terraform modules handle provider configuration, script templating, tagging, and runtime requirements automatically.
 
@@ -13,7 +13,7 @@ Teams manage their own monitors by editing a single YAML file. The underlying Te
 - **GitOps workflow** — Changes are previewed in Pull Requests (`terraform plan`) and applied automatically on merge to `main`
 - **Modern runtimes** — Chrome 100 for browser monitors, Node 16.10 for API and cert checks
 
-## Repository Structure
+## 📂 Repository Structure
 
 ```
 ├── .github/workflows/           # GitHub Actions CI/CD pipeline
@@ -139,7 +139,7 @@ monitors:
 
 The script logic (transport error handling, status validation, body validation) is shared across all Scripted API monitors via `api_monitor_template.js.tftpl`. Only the five config values above vary per monitor.
 
-## Onboarding a New Team
+## 🏗 Onboarding a New Team
 
 1. **Create a YAML file** in `teams/` (e.g., `teams/team-gamma.yml`)
 
@@ -178,7 +178,7 @@ The script logic (transport error handling, status validation, body validation) 
 
 The pipeline triggers only when files under `teams/` or `terraform/` are changed.
 
-## Security & State
+## 🔐 Security & State
 
 - **State** — Stored in S3 with native locking enabled to prevent concurrent deployment conflicts
 - **Secrets** — No API keys are stored in code; all credentials are stored as GitHub Actions Secrets
