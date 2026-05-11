@@ -31,7 +31,8 @@ monitors:
 
 alerts:
   policy_name: "WebSystems Alerts"
-  notification_email: "websystems-oncall@example.com"   # Replace with real address before applying
+  notification_emails:
+    - websystems-oncall@example.com
   conditions:
     - name: "Synthetic Monitor Failure"
       nrql: "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"

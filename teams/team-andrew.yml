@@ -30,7 +30,9 @@ monitors:
 
 alerts:
   policy_name: "Andrew Alerts"
-  notification_email: "andrewwn@gmail.com"   # Replace with real address before applying
+  notification_emails:                                                              
+    - andrewwn@gmail.com                                                            
+    - airnewhouse@yahoo.com      
   conditions:
     - name: "Synthetic Monitor Failure"
       nrql: "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"

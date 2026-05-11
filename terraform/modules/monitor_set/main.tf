@@ -94,7 +94,7 @@ resource "newrelic_entity_tags" "tags" {
 
 locals {
   alerts_enabled = can(local.team_data.alerts)
-  email_enabled  = can(local.team_data.alerts.notification_email)
+  email_enabled  = can(local.team_data.alerts.notification_emails)
 
   team_name_from_path = replace(basename(var.yaml_file), ".yml", "")
 
@@ -157,7 +157,7 @@ resource "newrelic_notification_destination" "email" {
 
   property {
     key   = "email"
-    value = local.team_data.alerts.notification_email
+    value = join(",", local.team_data.alerts.notification_emails)
   }
 }
 

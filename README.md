@@ -151,7 +151,9 @@ The alerts system uses the modern New Relic Alerts v2 stack: one alert policy pe
 ```yaml
 alerts:
   policy_name: "My Team Alerts"            # optional — defaults to filename-based name
-  notification_email: "team@example.com"   # optional — enables email notifications
+  notification_emails:                     # optional — enables email notifications
+    - team@example.com
+    - oncall@example.com
   conditions:
     - name: "Synthetic Monitor Failure"
       nrql: "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"
@@ -186,7 +188,9 @@ Since `conditions:` is a list, teams can manage alerts across any New Relic data
 ```yaml
 alerts:
   policy_name: "Alpha Team Alerts"
-  notification_email: "alpha-oncall@example.com"
+  notification_emails:
+    - alpha-oncall@example.com
+    - alpha-manager@example.com
   conditions:
     - name: "Synthetic Monitor Failure"
       nrql: "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"
@@ -212,9 +216,9 @@ alerts:
 |---|---|
 | Alert Policy | Any time `alerts:` block exists |
 | NRQL Alert Condition | One per entry in `conditions:` |
-| Notification Destination (email) | Only when `notification_email` is set |
-| Notification Channel | Only when `notification_email` is set |
-| Workflow | Only when `notification_email` is set |
+| Notification Destination (email) | Only when `notification_emails` is set |
+| Notification Channel | Only when `notification_emails` is set |
+| Workflow | Only when `notification_emails` is set |
 
 ## 🏗 Onboarding a New Team
 
