@@ -136,6 +136,7 @@ monitors:
 | `custom_headers` | No | `{}` | Key-value map of request headers |
 | `payload` | No | `null` | Request body for POST/PUT/PATCH. Omit for GET |
 | `expected_status` | No | `200` | HTTP response code to assert against |
+| `timeout_seconds` | No | `45` | Request timeout in seconds (e.g. `30` for latency-sensitive checks) |
 
 The script logic (transport error handling, status validation, body validation) is shared across all Scripted API monitors via `api_monitor_template.js.tftpl`. Only the five config values above vary per monitor.
 

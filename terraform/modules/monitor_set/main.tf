@@ -60,8 +60,9 @@ resource "newrelic_synthetics_script_monitor" "scripted_api_monitor" {
     api_url        = each.value.api_url
     http_method    = lookup(each.value, "http_method", "GET")
     custom_headers = jsonencode(lookup(each.value, "custom_headers", {}))
-    payload        = lookup(each.value, "payload", null) != null ? jsonencode(lookup(each.value, "payload", null)) : "null"
+    payload         = lookup(each.value, "payload", null) != null ? jsonencode(lookup(each.value, "payload", null)) : "null"
     expected_status = lookup(each.value, "expected_status", 200)
+    timeout_ms      = lookup(each.value, "timeout_seconds", 45) * 1000
   })
 }
 

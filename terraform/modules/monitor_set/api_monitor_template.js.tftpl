@@ -23,6 +23,9 @@ const PAYLOAD = ${payload};
 // 5. Expected Status Code (usually 200)
 const EXPECTED_STATUS = ${expected_status};
 
+// 6. Request timeout in milliseconds (converted from timeout_seconds in YAML)
+const TIMEOUT_MS = ${timeout_ms};
+
 /* ----------------------------------------------------------------------- */
 /* ---- NO FURTHER CODE CHANGES NEEDED BELOW THIS!!! DO NOT CHANGE!  ----- */
 /* ----------------------------------------------------------------------- */
@@ -33,6 +36,7 @@ const options = {
   url: API_URL,
   method: HTTP_METHOD,
   headers: CUSTOM_HEADERS,
+  timeout: TIMEOUT_MS,
   // Optional: Follow redirects automatically
   followRedirect: true,
   // Optional: Strict SSL verification
