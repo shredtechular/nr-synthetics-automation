@@ -139,6 +139,82 @@ monitors:
 
 The script logic (transport error handling, status validation, body validation) is shared across all Scripted API monitors via `api_monitor_template.js.tftpl`. Only the five config values above vary per monitor.
 
+## Managing Alerts
+
+Teams can manage alert conditions alongside their monitors by adding an optional `alerts:` block to their YAML file. If the block is absent, no alert resources are created.
+
+The alerts system uses the modern New Relic Alerts v2 stack: one alert policy per team, any number of NRQL conditions, with an optional email notification workflow.
+
+### Alert YAML structure
+
+```yaml
+alerts:
+  policy_name: "My Team Alerts"            # optional — defaults to filename-based name
+  notification_email: "team@example.com"   # optional — enables email notifications
+  conditions:
+    - name: "Synthetic Monitor Failure"
+      nrql: "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"
+      critical_threshold: 0
+      threshold_operator: "above"
+```
+
+### Required fields per condition
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | string | Condition name shown in New Relic Alerts UI |
+| `nrql` | string | Any valid NRQL query — Synthetics, APM, Browser, Infrastructure, Logs, etc. |
+| `critical_threshold` | number | Value that triggers a critical incident |
+| `threshold_operator` | string | `"above"`, `"above_or_equals"`, `"below"`, `"below_or_equals"`, `"equals"` |
+
+### Optional fields per condition (all have defaults)
+
+| Field | Default | Description |
+|---|---|---|
+| `threshold_duration` | `60` | Seconds threshold must be breached before firing |
+| `threshold_occurrences` | `"at_least_once"` | `"at_least_once"` or `"all"` |
+| `aggregation_window` | `60` | Evaluation window in seconds |
+| `aggregation_method` | `"event_flow"` | `"event_flow"` for event data; `"cadence"` for metric streams |
+| `aggregation_delay` | `120` | Seconds to wait for late-arriving data before evaluating |
+| `fill_option` | `"none"` | How to handle gaps in data: `"none"`, `"last_value"`, `"static"` |
+
+### Multi-condition example
+
+Since `conditions:` is a list, teams can manage alerts across any New Relic data source in one place:
+
+```yaml
+alerts:
+  policy_name: "Alpha Team Alerts"
+  notification_email: "alpha-oncall@example.com"
+  conditions:
+    - name: "Synthetic Monitor Failure"
+      nrql: "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"
+      critical_threshold: 0
+      threshold_operator: "above"
+
+    - name: "High APM Error Rate"
+      nrql: "SELECT count(*) FROM TransactionError WHERE appName = 'my-app'"
+      critical_threshold: 10
+      threshold_operator: "above"
+      threshold_duration: 300
+
+    - name: "Slow Page Load"
+      nrql: "SELECT average(duration) FROM PageView WHERE appName = 'my-app'"
+      critical_threshold: 5
+      threshold_operator: "above"
+      aggregation_method: "cadence"
+```
+
+### What gets created in New Relic
+
+| Resource | When |
+|---|---|
+| Alert Policy | Any time `alerts:` block exists |
+| NRQL Alert Condition | One per entry in `conditions:` |
+| Notification Destination (email) | Only when `notification_email` is set |
+| Notification Channel | Only when `notification_email` is set |
+| Workflow | Only when `notification_email` is set |
+
 ## 🏗 Onboarding a New Team
 
 1. **Create a YAML file** in `teams/` (e.g., `teams/team-gamma.yml`)

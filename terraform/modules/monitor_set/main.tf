@@ -86,3 +86,115 @@ resource "newrelic_entity_tags" "tags" {
     }
   }
 }
+
+# -----------------------------------------------------------------------
+# ALERTS
+# -----------------------------------------------------------------------
+
+locals {
+  alerts_enabled = can(local.team_data.alerts)
+  email_enabled  = can(local.team_data.alerts.notification_email)
+
+  team_name_from_path = replace(basename(var.yaml_file), ".yml", "")
+
+  policy_name = (
+    local.alerts_enabled && can(local.team_data.alerts.policy_name)
+    ? local.team_data.alerts.policy_name
+    : "${local.team_name_from_path} Alerts"
+  )
+
+  alert_conditions = local.alerts_enabled ? {
+    for c in local.team_data.alerts.conditions : c.name => c
+  } : {}
+}
+
+# Alert Policy — created when an alerts: block exists in the team YAML
+resource "newrelic_alert_policy" "alert_policy" {
+  count = local.alerts_enabled ? 1 : 0
+
+  name                = local.policy_name
+  incident_preference = "PER_POLICY"
+}
+
+# NRQL Alert Conditions — one per entry in alerts.conditions
+# Supports any NRQL data source: Synthetics, APM, Browser, Infrastructure, Logs
+resource "newrelic_nrql_alert_condition" "condition" {
+  for_each  = local.alert_conditions
+  policy_id = newrelic_alert_policy.alert_policy[0].id
+
+  name    = each.value.name
+  type    = "static"
+  enabled = true
+
+  nrql {
+    query = each.value.nrql
+  }
+
+  aggregation_window = lookup(each.value, "aggregation_window", 60)
+  aggregation_method = lookup(each.value, "aggregation_method", "event_flow")
+  aggregation_delay  = lookup(each.value, "aggregation_delay", 120)
+
+  critical {
+    operator              = each.value.threshold_operator
+    threshold             = each.value.critical_threshold
+    threshold_duration    = lookup(each.value, "threshold_duration", 60)
+    threshold_occurrences = lookup(each.value, "threshold_occurrences", "at_least_once")
+  }
+
+  fill_option                    = lookup(each.value, "fill_option", "none")
+  expiration_duration            = 300
+  open_violation_on_expiration   = false
+  close_violations_on_expiration = true
+}
+
+# Email Notification Destination — created when alerts.notification_email is set
+resource "newrelic_notification_destination" "email" {
+  count = local.email_enabled ? 1 : 0
+
+  name = "${local.policy_name} - Email"
+  type = "EMAIL"
+
+  property {
+    key   = "email"
+    value = local.team_data.alerts.notification_email
+  }
+}
+
+# Notification Channel (message template)
+resource "newrelic_notification_channel" "email_channel" {
+  count          = local.email_enabled ? 1 : 0
+  name           = "${local.policy_name} - Email Channel"
+  type           = "EMAIL"
+  product        = "IINT"
+  destination_id = newrelic_notification_destination.email[0].id
+
+  property {
+    key   = "subject"
+    value = "New Relic Alert: {{ issueTitle }}"
+  }
+}
+
+# Workflow — routes issues from this policy to the email destination
+resource "newrelic_workflow" "email_workflow" {
+  count   = local.email_enabled ? 1 : 0
+  name    = "${local.policy_name} - Workflow"
+  enabled = true
+
+  muting_rules_handling = "DONT_NOTIFY_FULLY_MUTED_ISSUES"
+
+  issues_filter {
+    name = "Policy Filter"
+    type = "FILTER"
+
+    predicate {
+      attribute = "labels.policyIds"
+      operator  = "EXACTLY_MATCHES"
+      values    = [tostring(newrelic_alert_policy.alert_policy[0].id)]
+    }
+  }
+
+  destination {
+    channel_id            = newrelic_notification_channel.email_channel[0].id
+    notification_triggers = ["ACTIVATED", "ACKNOWLEDGED", "CLOSED"]
+  }
+}

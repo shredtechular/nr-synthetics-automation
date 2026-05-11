@@ -4,16 +4,15 @@ monitors:
     uri: "https://andrewwnewhouse.com"
     period: "EVERY_HOUR"
     locations: ["US_WEST_1", "US_EAST_1"]
-    tags: 
-      team: "andrew"
-      env: "production"
-      responsible-team: "andrew"
+    tags: {application: andrew, environment: production, functional_component: AWN, system_criticality: high}
 
   - name: "Andrew-VehicleAPI-Check"
     type: "SCRIPTED_API"
     api_url: "https://vpic.nhtsa.dot.gov/api/vehicles/decodewmi/1FD?format=json"
     period: "EVERY_15_MINUTES"
     locations: ["US_EAST_1"]
+    http_method: "GET"
+    custom_headers: "content-type: applicastion/json"
     tags:
       team: "andrew"
       env: "production"
@@ -24,7 +23,16 @@ monitors:
     domain: "andrewwnewhouse.com"
     period: "EVERY_DAY"
     locations: ["US_EAST_1"]
-    tags: 
+    tags:
       team: "alpha"
       env: "production"
       responsible-team: "alpha-sre"
+
+alerts:
+  policy_name: "Andrew Alerts"
+  notification_email: "andrewwn@gmail.com"   # Replace with real address before applying
+  conditions:
+    - name: "Synthetic Monitor Failure"
+      nrql: "SELECT count(*) FROM SyntheticCheck WHERE result = 'FAILED'"
+      critical_threshold: 0
+      threshold_operator: "above"
